@@ -502,7 +502,6 @@ export default function AuthOnboarding({ onAuthSuccess }: AuthOnboardingProps) {
         </div>
 
         <div className="text-natural-light/60 text-xs flex justify-between items-center border-t border-[#2d6a4f]/45 pt-6">
-          <span>Final Year Project (FYP) Demo</span>
           <span>Hyderabad, Sindh</span>
         </div>
       </div>
