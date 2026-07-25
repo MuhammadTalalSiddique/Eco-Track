@@ -41,7 +41,11 @@ export default function App() {
 
   // Render Login / Registration screen if unauthenticated
   if (!user || !profile) {
-    return <AuthOnboarding onAuthSuccess={updateUserProfileState} />;
+    return <AuthOnboarding 
+             onAuthSuccess={updateUserProfileState} 
+             darkMode={darkMode}
+             onToggleDarkMode={() => setDarkMode(!darkMode)}
+           />;
   }
 
   // Force email verification if using native Firebase Auth and email is unverified
