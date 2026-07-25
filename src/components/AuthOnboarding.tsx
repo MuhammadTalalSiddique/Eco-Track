@@ -9,16 +9,18 @@ import { doc, setDoc, getDoc, collection, query, where, getDocs } from 'firebase
 import { auth, db, googleProvider } from '../lib/firebase';
 import { UserProfile, UserRole, Language } from '../types';
 import { i18n } from '../lib/i18n';
-import { Leaf, Mail, Lock, User, MapPin, Building, Globe, ChevronRight, ChevronLeft, ArrowRight, Camera, AlertTriangle, Gift } from 'lucide-react';
+import { Leaf, Mail, Lock, User, MapPin, Building, Globe, ChevronRight, ChevronLeft, ArrowRight, Camera, AlertTriangle, Gift, Sun, Moon } from 'lucide-react';
 import { motion } from 'motion/react';
 import config from '../../firebase-applet-config.json';
 import ForgotPassword from '../pages/ForgotPassword';
 
 interface AuthOnboardingProps {
   onAuthSuccess: (profile: UserProfile) => void;
+  darkMode?: boolean;
+  onToggleDarkMode?: () => void;
 }
 
-export default function AuthOnboarding({ onAuthSuccess }: AuthOnboardingProps) {
+export default function AuthOnboarding({ onAuthSuccess, darkMode = false, onToggleDarkMode }: AuthOnboardingProps) {
   const [isLogin, setIsLogin] = useState(true);
   const [role, setRole] = useState<UserRole>('citizen');
   const [language, setLanguage] = useState<Language>('en');
@@ -471,7 +473,7 @@ export default function AuthOnboarding({ onAuthSuccess }: AuthOnboardingProps) {
   }
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-12 bg-natural-bg text-stone-850">
+    <div className={`min-h-screen grid lg:grid-cols-12 ${darkMode ? 'bg-slate-900 text-white' : 'bg-natural-bg text-stone-850'}`}>
       {/* Brand Side Panel */}
       <div className="lg:col-span-5 bg-gradient-to-br from-natural-dark to-natural-medium text-white p-8 lg:p-12 flex flex-col justify-between shadow-lg">
         <div className="flex items-center gap-2">
@@ -507,29 +509,42 @@ export default function AuthOnboarding({ onAuthSuccess }: AuthOnboardingProps) {
       </div>
 
       {/* Auth Form Side */}
-      <div className="lg:col-span-7 flex flex-col justify-center p-6 sm:p-12 lg:p-20 bg-white">
+      <div className={`lg:col-span-7 flex flex-col justify-center p-6 sm:p-12 lg:p-20 transition-colors duration-300 ${darkMode ? 'bg-slate-900' : 'bg-white'}`}>
         <div className="max-w-md w-full mx-auto">
           {/* Header language & switch */}
           <div className="flex justify-between items-center mb-8">
-            <div className="flex gap-1.5 p-1 bg-gray-100 rounded-lg text-xs font-semibold">
-              <button 
-                onClick={() => setLanguage('en')} 
-                className={`px-2.5 py-1.5 rounded-md transition ${language === 'en' ? 'bg-white shadow text-emerald-800' : 'text-gray-500 hover:text-gray-900'}`}
-              >
-                English
-              </button>
-              <button 
-                onClick={() => setLanguage('ur')} 
-                className={`px-2.5 py-1.5 rounded-md transition ${language === 'ur' ? 'bg-white shadow text-emerald-800' : 'text-gray-500 hover:text-gray-900'}`}
-              >
-                اردو
-              </button>
-              <button 
-                onClick={() => setLanguage('sd')} 
-                className={`px-2.5 py-1.5 rounded-md transition ${language === 'sd' ? 'bg-white shadow text-emerald-800' : 'text-gray-500 hover:text-gray-900'}`}
-              >
-                سنڌي
-              </button>
+            <div className="flex items-center gap-3">
+              <div className={`flex gap-1.5 p-1 rounded-lg text-xs font-semibold ${darkMode ? 'bg-slate-800' : 'bg-gray-100'}`}>
+                <button 
+                  onClick={() => setLanguage('en')} 
+                  className={`px-2.5 py-1.5 rounded-md transition ${language === 'en' ? (darkMode ? 'bg-slate-700 text-emerald-400 shadow' : 'bg-white shadow text-emerald-800') : (darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900')}`}
+                >
+                  English
+                </button>
+                <button 
+                  onClick={() => setLanguage('ur')} 
+                  className={`px-2.5 py-1.5 rounded-md transition ${language === 'ur' ? (darkMode ? 'bg-slate-700 text-emerald-400 shadow' : 'bg-white shadow text-emerald-800') : (darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900')}`}
+                >
+                  اردو
+                </button>
+                <button 
+                  onClick={() => setLanguage('sd')} 
+                  className={`px-2.5 py-1.5 rounded-md transition ${language === 'sd' ? (darkMode ? 'bg-slate-700 text-emerald-400 shadow' : 'bg-white shadow text-emerald-800') : (darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-900')}`}
+                >
+                  سنڌي
+                </button>
+              </div>
+              
+              {onToggleDarkMode && (
+                <button
+                  type="button"
+                  onClick={onToggleDarkMode}
+                  title="Toggle High Contrast Night Mode"
+                  className={`rounded-lg p-2 transition-all cursor-pointer flex items-center justify-center shrink-0 ${darkMode ? 'bg-slate-800 hover:bg-slate-700 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}
+                >
+                  {darkMode ? <Sun size={16} className="text-amber-300" /> : <Moon size={16} className="text-blue-500" />}
+                </button>
+              )}
             </div>
             
             <button
@@ -543,10 +558,10 @@ export default function AuthOnboarding({ onAuthSuccess }: AuthOnboardingProps) {
             </button>
           </div>
 
-          <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">
+          <h2 className={`text-3xl font-extrabold tracking-tight mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
             {isLogin ? t.welcome_back : t.welcome_join}
           </h2>
-          <p className="text-sm text-gray-500 mb-6">
+          <p className={`text-sm mb-6 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
             {isLogin ? 'Sign in to log scans, earn rewards, and browse listings' : 'Create an account to start earning points for cleaning Hyderabad'}
           </p>
 
